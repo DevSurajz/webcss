@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Risk Solved</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <style>
+    :root{
+      --glass-1: rgba(10, 18, 30, 0.45);
+      --glass-2: rgba(8, 14, 22, 0.6);
+      --card-border: rgba(255,255,255,0.06);
+      --muted: rgba(255,255,255,0.72);
+    }
+
+  
+    @keyframes floatAnim {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-18px) rotate(4deg); }
+    }
+    @keyframes floatSlowAnim {
+      0%,100% { transform: translateY(0) translateX(0) rotate(0deg); }
+      50% { transform: translateY(-26px) translateX(8px) rotate(8deg); }
+    }
+    @keyframes floatReverseAnim {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(18px) rotate(-6deg); }
+    }
+    @keyframes rotate3dAnim {
+      0% { transform: rotateX(0deg) rotateY(0deg); }
+      100% { transform: rotateX(360deg) rotateY(360deg); }
+    }
+    @keyframes pulseGlowAnim {
+      0%,100% { box-shadow: 0 0 18px rgba(59,130,246,0.22); }
+      50% { box-shadow: 0 0 40px rgba(59,130,246,0.44), 0 0 60px rgba(59,130,246,0.2); }
+    }
+    @keyframes gradientShiftAnim {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .float-animation { animation: floatAnim 6s ease-in-out infinite; }
+    .float-slow { animation: floatSlowAnim 8s ease-in-out infinite; }
+    .float-reverse { animation: floatReverseAnim 7s ease-in-out infinite; }
+    .rotate-3d { animation: rotate3dAnim 18s linear infinite; }
+    .pulse-glow { animation: pulseGlowAnim 3.2s ease-in-out infinite; }
+    .gradient-animate { background-size: 200% 200%; animation: gradientShiftAnim 6s ease infinite; }
+
+  
+    .cube-3d { width: 100px; height: 100px; position: relative; transform-style: preserve-3d; animation: rotate3dAnim 14s linear infinite; }
+    .cube-face { position: absolute; width: 100%; height: 100%; border: 2px solid rgba(99,102,241,0.14); background: rgba(99,102,241,0.05); backdrop-filter: blur(6px); border-radius: 8px; }
+    .cube-face:nth-child(1) { transform: translateZ(50px); }
+    .cube-face:nth-child(2) { transform: rotateY(90deg) translateZ(50px); }
+    .cube-face:nth-child(3) { transform: rotateY(180deg) translateZ(50px); }
+    .cube-face:nth-child(4) { transform: rotateY(-90deg) translateZ(50px); }
+    .cube-face:nth-child(5) { transform: rotateX(90deg) translateZ(50px); }
+    .cube-face:nth-child(6) { transform: rotateX(-90deg) translateZ(50px); }
+
+    .pyramid-3d { width: 0; height: 0; border-left: 60px solid transparent; border-right: 60px solid transparent; border-bottom: 110px solid rgba(139,92,246,0.22); }
+    .sphere-3d { width: 120px; height: 120px; border-radius: 9999px; background: radial-gradient(circle at 30% 30%, rgba(6,182,212,0.36), rgba(6,182,212,0.08)); border: 2px solid rgba(6,182,212,0.26); box-shadow: 0 0 40px rgba(6,182,212,0.18); }
+
+    .glass { background: linear-gradient(135deg, rgba(8,12,24,0.6), rgba(8,12,20,0.45)); border: 1px solid var(--card-border); }
+    
+    @media (max-width: 768px) {
+      .float-animation, .float-slow, .float-reverse, .rotate-3d, .pulse-glow, .gradient-animate, .cube-3d, .pyramid-3d, .sphere-3d {
+        animation: none!important;
+        transform: none!important;
+      }
+      .cube-face, .pyramid-3d { opacity: 0.85; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .float-animation, .float-slow, .float-reverse, .rotate-3d, .pulse-glow, .gradient-animate {
+        animation: none !important;
+      }
+    }
+
+    
+    .accordion-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+    :focus { outline: 2px solid rgba(99,102,241,0.6); outline-offset: 3px; border-radius: 6px; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-950 text-white antialiased selection:bg-cyan-500 selection:text-white">
+
+ 
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute top-20 left-10 cube-3d opacity-60">
+      <div class="cube-face"></div><div class="cube-face"></div><div class="cube-face"></div>
+      <div class="cube-face"></div><div class="cube-face"></div><div class="cube-face"></div>
+    </div>
+
+    <div class="absolute top-40 right-20 sphere-3d opacity-55"></div>
+
+    <div class="absolute bottom-32 left-1/4 pyramid-3d opacity-55"></div>
+
+    <div class="absolute bottom-20 right-1/3 cube-3d opacity-40" style="width:80px;height:80px;">
+      <div class="cube-face" style="width:80px;height:80px;"></div><div class="cube-face" style="width:80px;height:80px;"></div>
+      <div class="cube-face" style="width:80px;height:80px;"></div><div class="cube-face" style="width:80px;height:80px;"></div>
+      <div class="cube-face" style="width:80px;height:80px;"></div><div class="cube-face" style="width:80px;height:80px;"></div>
+    </div>
+
+    <div class="absolute top-1/3 right-1/4 w-32 h-32 border-4 border-purple-500/20 rounded-full float-animation"></div>
+    <div class="absolute bottom-1/4 left-1/3 w-40 h-40 border-4 border-cyan-500/18 rounded-full float-slow"></div>
+  </div>
+
+  
+  <header class="relative z-50">
+    <nav class="px-6 py-4 backdrop-blur-sm bg-[rgba(6,8,16,0.35)] border-b border-white/6">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="#" class="flex items-center gap-3" aria-label="Risk Solved home">
+            <svg class="w-9 h-9 text-cyan-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6" />
+              <path d="M7 12h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M12 7v10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <span class="text-2xl font-semibold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent gradient-animate">Risk Solved</span>
+          </a>
+        </div>
+
+       
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#features" class="text-sm hover:text-cyan-300 transition">Features</a>
+          <a href="#benefits" class="text-sm hover:text-cyan-300 transition">Benefits</a>
+          <a href="#resources" class="text-sm hover:text-cyan-300 transition">Resources</a>
+          <a href="#pricing" class="text-sm hover:text-cyan-300 transition">Pricing</a>
+          <a href="#team" class="text-sm hover:text-cyan-300 transition">Team</a>
+
+          <a href="#contact" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg text-sm font-medium hover:scale-105 transition transform shadow-sm">Get Started</a>
+        </div>
+
+        
+        <div class="flex items-center gap-3 md:hidden">
+          
+          <button id="themeToggle" class="p-2 rounded-md focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400" aria-label="Toggle theme (visual)">
+            <svg id="themeIcon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          
+          <button id="menuBtn" aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu" class="p-2 rounded-md focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileMenu" class="hidden md:hidden max-w-7xl mx-auto mt-3 px-4 pb-4">
+        <div class="flex flex-col gap-3">
+          <a href="#features" class="block py-2 px-3 rounded-md hover:bg-white/5" role="menuitem">Features</a>
+          <a href="#benefits" class="block py-2 px-3 rounded-md hover:bg-white/5" role="menuitem">Benefits</a>
+          <a href="#resources" class="block py-2 px-3 rounded-md hover:bg-white/5" role="menuitem">Resources</a>
+          <a href="#pricing" class="block py-2 px-3 rounded-md hover:bg-white/5" role="menuitem">Pricing</a>
+          <a href="#team" class="block py-2 px-3 rounded-md hover:bg-white/5" role="menuitem">Team</a>
+          <a href="#contact" class="block py-2 px-3 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-center rounded-lg">Get Started</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+
+  <main class="relative z-10">
+  
+    <section class="px-6 pt-20 pb-16">
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+          Real-time insurance risk insights for
+          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 gradient-animate">
+            actionable intelligence
+          </span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
+          Risk Solved is a global provider of insurance risk engineering management and data analytics software. Convert surveys, IoT and historical loss data into prioritized actions, risk scores and portfolio-level insights.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+          <a href="#contact" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg text-lg font-semibold hover:shadow-2xl hover:scale-105 transition transform pulse-glow" role="button">Request Demo</a>
+          <a href="#features" class="px-8 py-4 border-2 border-white/10 rounded-lg text-lg font-semibold hover:bg-white/5 transition">Learn More</a>
+        </div>
+
+       
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div class="glass p-6 rounded-xl border border-white/6 hover:scale-105 transition transform">
+            <div class="text-4xl md:text-5xl font-bold text-blue-400">50%</div>
+            <div class="text-slate-300 mt-1">Efficiency Improvement</div>
+          </div>
+          <div class="glass p-6 rounded-xl border border-white/6 hover:scale-105 transition transform">
+            <div class="text-4xl md:text-5xl font-bold text-cyan-400">20%</div>
+            <div class="text-slate-300 mt-1">Increased Profitability</div>
+          </div>
+          <div class="glass p-6 rounded-xl border border-white/6 hover:scale-105 transition transform">
+            <div class="text-4xl md:text-5xl font-bold text-purple-400">15%</div>
+            <div class="text-slate-300 mt-1">More Surveys Completed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="features" class="px-6 py-20 bg-gradient-to-b from-transparent to-[rgba(0,0,0,0.45)]">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">
+          Powerful Features for
+          <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 gradient-animate">Risk Engineers & Underwriters</span>
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+         
+          <article class="glass p-8 rounded-2xl border border-white/6 hover:border-blue-400/40 transition transform hover:scale-105">
+            <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center mb-6">
+             
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="white">
+                <path d="M9 12h6M9 16h6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-semibold mb-3">Streamlined Risk Surveys</h3>
+            <p class="text-slate-300 mb-4">Digitize survey creation, assign tasks, and collect field data with offline sync. Survey templates, conditional logic and photo-annotations included.</p>
+            <a href="#resources" class="text-cyan-300 inline-flex items-center gap-2">Learn more</a>
+          </article>
+
+       
+          <article class="glass p-8 rounded-2xl border border-white/6 hover:border-purple-400/40 transition transform hover:scale-105">
+            <div class="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-500 rounded-xl flex items-center justify-center mb-6">
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="white">
+                <path d="M12 3v3M12 18v3M4.2 6.2l2.1 2.1M17.7 17.7l2.1 2.1M1 12h3M20 12h3M4.2 17.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="12" r="3" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-semibold mb-3">Configurable Tools</h3>
+            <p class="text-slate-300 mb-4">Customize forms, checklists and scoring logic per region or client. Role-based workflows and permission controls keep teams aligned.</p>
+            <a href="#resources" class="text-purple-300 inline-flex items-center gap-2">Learn more</a>
+          </article>
+
+          
+          <article class="glass p-8 rounded-2xl border border-white/6 hover:border-cyan-400/40 transition transform hover:scale-105">
+            <div class="w-14 h-14 bg-gradient-to-br from-cyan-600 to-blue-500 rounded-xl flex items-center justify-center mb-6">
+              <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="white">
+                <path d="M3 7h18M3 12h12M3 17h18" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-semibold mb-3">Actionable Insights</h3>
+            <p class="text-slate-300 mb-4">Auto-generated recommendations and risk scores guide remediation priorities. Cohort benchmarking helps you prioritize portfolio actions.</p>
+            <a href="#resources" class="text-cyan-300 inline-flex items-center gap-2">Learn more</a>
+          </article>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mt-10">
+          <div class="glass p-6 rounded-xl border border-white/6">
+            <h4 class="font-semibold mb-2">IoT & Sensor Integrations</h4>
+            <p class="text-slate-300 text-sm">Stream live telemetry into dashboards; set alerts and detect anomalies early.</p>
+          </div>
+          <div class="glass p-6 rounded-xl border border-white/6">
+            <h4 class="font-semibold mb-2">Portfolio Analytics</h4>
+            <p class="text-slate-300 text-sm">Aggregate site scores, loss history and exposures to spot outliers and concentration risk.</p>
+          </div>
+          <div class="glass p-6 rounded-xl border border-white/6">
+            <h4 class="font-semibold mb-2">APIs & Integrations</h4>
+            <p class="text-slate-300 text-sm">Secure API endpoints and pre-built connectors to core policy and claims systems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="benefits" class="px-6 py-20">
+      <div class="max-w-7xl mx-auto">
+        <div class="glass p-12 rounded-3xl border border-white/6">
+          <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">How Risk Solved Delivers Value</h2>
+          <div class="grid md:grid-cols-2 gap-8 mt-6">
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-cyan-500 shrink-0">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">Actionable Risk Intelligence</h3>
+                <p class="text-slate-300 text-sm mt-1">Turn static assessments into continuous signals that drive decisions across underwriting and loss control.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-600 to-pink-500 shrink-0">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">Enhanced Customer Engagement</h3>
+                <p class="text-slate-300 text-sm mt-1">Share interactive reports with insureds and recommend prioritized controls to reduce loss frequency and severity.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-600 to-blue-500 shrink-0">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">Increased Data Collection Efficiency</h3>
+                <p class="text-slate-300 text-sm mt-1">Standardize inputs across teams so data is consistent, searchable and reliable for machine learning models.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br from-pink-600 to-purple-500 shrink-0">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <h3 class="font-semibold">Hassle-Free Integration</h3>
+                <p class="text-slate-300 text-sm mt-1">Cloud-native SaaS, single-sign-on and secure connectors make deployment straightforward.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resources" class="px-6 py-20 bg-[rgba(0,0,0,0.25)]">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Resources & Case Studies</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+          <article class="glass p-6 rounded-xl border border-white/6">
+            <h3 class="font-semibold mb-2">Industrial Portfolio — 30% fewer claims</h3>
+            <p class="text-slate-300 text-sm mb-4">How a global insurer reduced frequency by using predictive signals and targeted surveys.</p>
+            <a href="#" class="text-cyan-300">Read case study →</a>
+          </article>
+
+          <article class="glass p-6 rounded-xl border border-white/6">
+            <h3 class="font-semibold mb-2">Retail Chain — automated inspections</h3>
+            <p class="text-slate-300 text-sm mb-4">A retail portfolio integrated IoT to detect equipment faults early.</p>
+            <a href="#" class="text-purple-300">Read case study →</a>
+          </article>
+
+          <article class="glass p-6 rounded-xl border border-white/6">
+            <h3 class="font-semibold mb-2">Whitepaper — risk scoring explained</h3>
+            <p class="text-slate-300 text-sm mb-4">Our methodology for translating field observations into actionable risk scores.</p>
+            <a href="#" class="text-blue-300">Download whitepaper →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="pricing" class="px-6 py-20">
+      <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8">Pricing</h2>
+        <p class="text-slate-300 max-w-2xl mx-auto mb-8">Flexible subscription tiers for teams of all sizes. Annual discounts and enterprise plans available.</p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          
+          <div class="glass p-8 rounded-2xl border border-white/6">
+            <div class="text-sm uppercase text-slate-300 mb-4">Starter</div>
+            <div class="text-4xl font-bold mb-2">$49<span class="text-sm font-medium">/mo</span></div>
+            <div class="text-slate-300 mb-6">For small teams starting to digitize surveys.</div>
+            <ul class="text-slate-300 space-y-2 mb-6 text-sm">
+              <li>Survey templates</li>
+              <li>Basic reporting</li>
+              <li>Email support</li>
+            </ul>
+            <a href="#contact" class="inline-block px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">Start trial</a>
+          </div>
+
+          
+          <div class="glass p-8 rounded-2xl border border-white/6">
+            <div class="text-sm uppercase text-slate-300 mb-4">Professional</div>
+            <div class="text-4xl font-bold mb-2">$199<span class="text-sm font-medium">/mo</span></div>
+            <div class="text-slate-300 mb-6">Recommended for underwriting teams & mid-size portfolios.</div>
+            <ul class="text-slate-300 space-y-2 mb-6 text-sm">
+              <li>Advanced scoring</li>
+              <li>Portfolio analytics</li>
+              <li>API access & SSO</li>
+            </ul>
+            <a href="#contact" class="inline-block px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">Get demo</a>
+          </div>
+
+        
+          <div class="glass p-8 rounded-2xl border border-white/6">
+            <div class="text-sm uppercase text-slate-300 mb-4">Enterprise</div>
+            <div class="text-4xl font-bold mb-2">Custom</div>
+            <div class="text-slate-300 mb-6">Tailored deployments, SLAs and onboarding.</div>
+            <ul class="text-slate-300 space-y-2 mb-6 text-sm">
+              <li>Dedicated account team</li>
+              <li>Custom integrations</li>
+              <li>Enterprise SLAs</li>
+            </ul>
+            <a href="#contact" class="inline-block px-6 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="team" class="px-6 py-20 bg-[rgba(0,0,0,0.18)]">
+      <div class="max-w-7xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8">Team</h2>
+        <p class="text-slate-300 mb-10 max-w-2xl mx-auto">Meet the experienced team guiding product and risk engineering best practice.</p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="glass p-6 rounded-xl border border-white/6 text-left">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-slate-900 font-bold">AL</div>
+              <div>
+                <div class="font-semibold">Alex Liu</div>
+                <div class="text-slate-300 text-sm">Head of Risk Engineering</div>
+              </div>
+            </div>
+            <p class="text-slate-300 mt-4 text-sm">Former insurer with 15 years in loss control and field operations.</p>
+          </div>
+
+          <div class="glass p-6 rounded-xl border border-white/6 text-left">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-slate-900 font-bold">SM</div>
+              <div>
+                <div class="font-semibold">Sara Mills</div>
+                <div class="text-slate-300 text-sm">VP Product</div>
+              </div>
+            </div>
+            <p class="text-slate-300 mt-4 text-sm">Product leader focused on data-driven UX and integrations.</p>
+          </div>
+
+          <div class="glass p-6 rounded-xl border border-white/6 text-left">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-slate-900 font-bold">JC</div>
+              <div>
+                <div class="font-semibold">Jon Carter</div>
+                <div class="text-slate-300 text-sm">CTO</div>
+              </div>
+            </div>
+            <p class="text-slate-300 mt-4 text-sm">Builds scalable analytics platforms and real-time pipelines.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+ 
+    <section class="px-6 py-12">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="glass p-10 rounded-3xl border border-white/6">
+          <svg class="w-14 h-14 mx-auto mb-4 text-blue-400" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+          </svg>
+          <p class="text-lg md:text-xl text-slate-200 mb-4 italic">"Using Risk Solved has enhanced the technical support we offer to our clients and allowed us to deliver benchmarking metrics for insured risks."</p>
+          <p class="text-cyan-300 font-semibold">Chief Loss Control Officer — Global Insurer</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="px-6 py-20 bg-[rgba(0,0,0,0.22)]">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-8">Frequently asked questions</h2>
+
+        <div class="space-y-4">
+          <div class="glass p-4 rounded-xl border border-white/6">
+            <button class="w-full text-left accordion-btn flex items-center justify-between py-3" aria-expanded="false" aria-controls="q1">
+              <span>
+                <strong>How long does a typical deployment take?</strong>
+                <div class="text-slate-300 text-sm mt-1">Deployment time depends on scale. Small pilots take days; enterprise rollouts typically take 8–12 weeks.</div>
+              </span>
+              <svg class="chev w-5 h-5 ml-4 transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="glass p-4 rounded-xl border border-white/6">
+            <button class="w-full text-left accordion-btn flex items-center justify-between py-3" aria-expanded="false" aria-controls="q2">
+              <span>
+                <strong>Do you offer SSO and API access?</strong>
+                <div class="text-slate-300 text-sm mt-1">Yes — SAML SSO, OAuth, and secure RESTful APIs are available on Professional and Enterprise plans.</div>
+              </span>
+              <svg class="chev w-5 h-5 ml-4 transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="glass p-4 rounded-xl border border-white/6">
+            <button class="w-full text-left accordion-btn flex items-center justify-between py-3" aria-expanded="false" aria-controls="q3">
+              <span>
+                <strong>Can we migrate historical survey data?</strong>
+                <div class="text-slate-300 text-sm mt-1">Yes — we support imports (CSV/JSON) and help map legacy fields to new templates.</div>
+              </span>
+              <svg class="chev w-5 h-5 ml-4 transition-transform" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="px-6 py-16">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="glass p-10 rounded-3xl border border-white/6">
+          <h3 class="text-2xl font-bold mb-4">Ready to transform your risk management?</h3>
+          <p class="text-slate-300 mb-6">Join leading insurance companies using Risk Solved to increase profitability and efficiency.</p>
+          <a href="#contact" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-xl text-lg font-semibold hover:scale-105 transition transform">Schedule a Demo</a>
+        </div>
+      </div>
+    </section>
+
+  
+    <section id="contact" class="px-6 py-20 bg-[rgba(0,0,0,0.18)]">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-6">Contact Sales</h2>
+        <p class="text-slate-300 text-center mb-8">Tell us about your portfolio and we'll recommend the best approach.</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          
+          <form id="contactForm" class="glass p-8 rounded-xl border border-white/6" action="#" method="post" novalidate>
+            <label class="block mb-3">
+              <span class="text-sm text-slate-300">Full name</span>
+              <input name="name" type="text" required class="mt-1 block w-full rounded-md bg-transparent border border-white/8 px-3 py-2 text-white focus:ring-0" placeholder="Jane Doe" />
+            </label>
+
+            <label class="block mb-3">
+              <span class="text-sm text-slate-300">Work email</span>
+              <input name="email" type="email" required class="mt-1 block w-full rounded-md bg-transparent border border-white/8 px-3 py-2 text-white" placeholder="you@company.com" />
+            </label>
+
+            <label class="block mb-3">
+              <span class="text-sm text-slate-300">Company</span>
+              <input name="company" type="text" class="mt-1 block w-full rounded-md bg-transparent border border-white/8 px-3 py-2 text-white" placeholder="Company name" />
+            </label>
+
+            <label class="block mb-3">
+              <span class="text-sm text-slate-300">Message</span>
+              <textarea name="message" rows="4" class="mt-1 block w-full rounded-md bg-transparent border border-white/8 px-3 py-2 text-white" placeholder="Tell us what you need"></textarea>
+            </label>
+
+            <div class="flex items-center gap-3 mt-4">
+              <button type="submit" class="px-5 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">Send request</button>
+              <div class="text-slate-400 text-sm">Or email us at <a href="mailto:hello@risksolved.com" class="text-cyan-300">hello@risksolved.com</a></div>
+            </div>
+          </form>
+
+        
+          <aside class="glass p-8 rounded-xl border border-white/6">
+            <h3 class="font-semibold mb-4">Contact</h3>
+            <address class="not-italic text-slate-300 mb-6">
+              <div>hello@risksolved.com</div>
+              <div>+44 (0) 20 7127 0571</div>
+              <div class="text-sm mt-2">London, United Kingdom</div>
+            </address>
+
+            <h4 class="font-semibold mb-2">Quick links</h4>
+            <ul class="text-slate-300 space-y-2 mb-6">
+              <li><a href="#resources" class="hover:text-cyan-300">Case studies</a></li>
+              <li><a href="#pricing" class="hover:text-cyan-300">Pricing</a></li>
+              <li><a href="#faq" class="hover:text-cyan-300">FAQ</a></li>
+            </ul>
+
+            <div>
+              <h4 class="font-semibold mb-2">Newsletter</h4>
+              <form id="nlForm" class="flex gap-2" action="#" method="post" novalidate>
+                <input name="newsletter_email" type="email" required placeholder="you@company.com" class="flex-1 rounded-md bg-transparent border border-white/8 px-3 py-2 text-white" />
+                <button class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-md">Subscribe</button>
+              </form>
+              <p class="text-slate-400 text-xs mt-2">We send occasional product updates and insights.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 px-6 py-10 border-t border-white/6">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Risk Solved</h3>
+          <p class="text-slate-300 text-sm">Global provider of insurance risk engineering management and data analytics software.</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-3">Product</h4>
+          <ul class="space-y-2 text-slate-300 text-sm">
+            <li><a href="#features" class="hover:text-cyan-300">Features</a></li>
+            <li><a href="#pricing" class="hover:text-cyan-300">Pricing</a></li>
+            <li><a href="#resources" class="hover:text-cyan-300">Integrations</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-3">Company</h4>
+          <ul class="space-y-2 text-slate-300 text-sm">
+            <li><a href="#" class="hover:text-cyan-300">About</a></li>
+            <li><a href="#" class="hover:text-cyan-300">Blog</a></li>
+            <li><a href="#" class="hover:text-cyan-300">Careers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-3">Contact</h4>
+          <address class="not-italic text-slate-300 text-sm">
+            <div>hello@risksolved.com</div>
+            <div>+44 (0) 20 7127 0571</div>
+            <div class="mt-1 text-xs">London, United Kingdom</div>
+          </address>
+        </div>
+      </div>
+
+      <div class="border-t border-white/6 pt-6 text-center text-slate-400">
+        <p>© <span id="year"></span> Risk Solved. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+ 
+  <script src="main.js"></script>
+
+  
+  <style>
+    .light-mode .glass { background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); }
+    .light-mode body { color: #0f172a; }
+    .light-mode .glass * { color: #e6eef8; } /* subtle override so text remains readable */
+  </style>
+</body>
+</html>
